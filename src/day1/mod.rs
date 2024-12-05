@@ -1,6 +1,5 @@
 use std::{fs::File, io::{BufRead, BufReader}};
 
-
 pub fn solve1() -> usize {
     let file = File::open("src/day1/input.txt").unwrap();
     let reader = BufReader::new(file);

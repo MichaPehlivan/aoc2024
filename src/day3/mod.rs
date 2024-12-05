@@ -1,7 +1,5 @@
 use std::{fs::File, io::{BufRead, BufReader}};
-
 use regex::Regex;
-
 
 pub fn solve1() -> usize {
     let file = File::open("src/day3/input.txt").unwrap();
