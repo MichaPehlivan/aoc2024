@@ -202,16 +202,16 @@ pub fn solve2() -> usize {
                         }
                         if grid[guard_pos.0][guard_pos.1-1] == '#' {
                             guard_dir = 1;
+                            if unique_posdirs.contains(&(guard_pos.0, guard_pos.1, guard_dir)) {
+                                loop_count += 1;
+                                break;
+                            }
+                            else {
+                                unique_posdirs.push((guard_pos.0, guard_pos.1, guard_dir));
+                            }
                         }
                         else {
                             guard_pos = (guard_pos.0, guard_pos.1-1);
-                        }
-                        if unique_posdirs.contains(&(guard_pos.0, guard_pos.1, guard_dir)) {
-                            loop_count += 1;
-                            break;
-                        }
-                        else {
-                            unique_posdirs.push((guard_pos.0, guard_pos.1, guard_dir));
                         }
                     },
                     1 => {
@@ -220,16 +220,16 @@ pub fn solve2() -> usize {
                         }
                         if grid[guard_pos.0+1][guard_pos.1] == '#' {
                             guard_dir = 2;
+                            if unique_posdirs.contains(&(guard_pos.0, guard_pos.1, guard_dir)) {
+                                loop_count += 1;
+                                break;
+                            }
+                            else {
+                                unique_posdirs.push((guard_pos.0, guard_pos.1, guard_dir));
+                            }
                         }
                         else {
                             guard_pos = (guard_pos.0+1, guard_pos.1);
-                        }
-                        if unique_posdirs.contains(&(guard_pos.0, guard_pos.1, guard_dir)) {
-                            loop_count += 1;
-                            break;
-                        }
-                        else {
-                            unique_posdirs.push((guard_pos.0, guard_pos.1, guard_dir));
                         }
                     },
                     2 => {
@@ -238,16 +238,16 @@ pub fn solve2() -> usize {
                         }
                         if grid[guard_pos.0][guard_pos.1+1] == '#' {
                             guard_dir = 3;
+                            if unique_posdirs.contains(&(guard_pos.0, guard_pos.1, guard_dir)) {
+                                loop_count += 1;
+                                break;
+                            }
+                            else {
+                                unique_posdirs.push((guard_pos.0, guard_pos.1, guard_dir));
+                            }
                         }
                         else {
                             guard_pos = (guard_pos.0, guard_pos.1+1);
-                        }
-                        if unique_posdirs.contains(&(guard_pos.0, guard_pos.1, guard_dir)) {
-                            loop_count += 1;
-                            break;
-                        }
-                        else {
-                            unique_posdirs.push((guard_pos.0, guard_pos.1, guard_dir));
                         }
                     },
                     3 => {
@@ -256,18 +256,17 @@ pub fn solve2() -> usize {
                         }
                         if grid[guard_pos.0-1][guard_pos.1] == '#' {
                             guard_dir = 0;
+                            if unique_posdirs.contains(&(guard_pos.0, guard_pos.1, guard_dir)) {
+                                loop_count += 1;
+                                break;
+                            }
+                            else {
+                                unique_posdirs.push((guard_pos.0, guard_pos.1, guard_dir));
+                            }
                         }
                         else {
                             guard_pos = (guard_pos.0-1, guard_pos.1);
                         }
-                        if unique_posdirs.contains(&(guard_pos.0, guard_pos.1, guard_dir)) {
-                            loop_count += 1;
-                            break;
-                        }
-                        else {
-                            unique_posdirs.push((guard_pos.0, guard_pos.1, guard_dir));
-                        }
-
                     },
                     _ => panic!("invalid guard direction!"),
                 }
