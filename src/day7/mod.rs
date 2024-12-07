@@ -1,4 +1,4 @@
-use std::{fs::File, io::{BufRead, BufReader}};
+use std::{collections::HashMap, fs::File, io::{BufRead, BufReader}};
 
 use itertools::{repeat_n, Itertools};
 
@@ -65,6 +65,9 @@ pub fn solve2() -> usize {
 
     let mut total = 0;
 
+    let mut permutation_map: HashMap<usize, Vec<Vec<&i32>>> = HashMap::new(); 
+    let options = [0, 1, 2]; //0 = *, 1 = +, 2 = ||
+
     for line in reader.lines() {
         let line_clone = line.unwrap().clone();
         let subdiv: Vec<&str> = line_clone.split(": ").collect();
@@ -80,10 +83,15 @@ pub fn solve2() -> usize {
 
         //generate possible combinations
         let oplist_len: usize = operands.len()-1;
-        let options = [0, 1, 2]; //0 = *, 1 = +, 2 = ||
-        let mut comb_list = vec![];
-        for perm in repeat_n(options.iter(), oplist_len).multi_cartesian_product() {
-            comb_list.push(perm);
+        let mut comb_list= vec![];
+        if permutation_map.contains_key(&oplist_len) {
+            comb_list = permutation_map.get(&oplist_len).unwrap().clone();
+        }
+        else {
+            for perm in repeat_n(options.iter(), oplist_len).multi_cartesian_product() {
+                comb_list.push(perm);
+            }
+            permutation_map.insert(oplist_len, comb_list.clone());
         }
 
         //try all combinations
@@ -94,15 +102,24 @@ pub fn solve2() -> usize {
                 let operator = **combination.get(operator_index).unwrap();
                 if operator == 0 {
                     operation_result *= operand;
+                    if operation_result > result {
+                        break;
+                    }
                 }
                 else if operator == 1 {
                     operation_result += operand;
+                    if operation_result > result {
+                        break;
+                    }
                 }
                 else {
                     let mut result_string = operation_result.to_string();
                     let operand_string = operand.to_string();
                     result_string.push_str(operand_string.as_str());
                     operation_result = usize::from_str_radix(&result_string, 10).unwrap();
+                    if operation_result > result {
+                        break;
+                    }
                 }
                 operator_index += 1;
             }
