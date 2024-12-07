@@ -1,4 +1,4 @@
-use std::{fs::File, io::{BufRead, BufReader}};
+use std::{collections::HashMap, fs::File, io::{BufRead, BufReader}};
 
 pub fn solve1() -> usize {
     let file = File::open("src/day5/input.txt").unwrap();
@@ -118,16 +118,23 @@ pub fn solve2() -> usize {
     }
 
     for update in incorrect_updates {
-        let mut sorted_update = update.clone();
-        for _ in 0..4 { //yeah, idk either
-            for pair in &pairs {
-                if let (Some(index0), Some(index1)) = (sorted_update.iter().position(|x| x == &pair.0), sorted_update.iter().position(|x| x == &pair.1)) {
-                    if index0 > index1 {
-                        sorted_update.swap(index0, index1);
-                    }
+        let mut connection_map: HashMap<usize, usize> = HashMap::new();
+        for pair in &pairs {
+            if update.contains(&pair.0) && update.contains(&pair.1) {
+                if !connection_map.contains_key(&pair.0) {
+                    connection_map.insert(pair.0, 1);
+                }
+                else {
+                    let mut current_count = *connection_map.get_mut(&pair.0).unwrap();
+                    current_count += 1;
+                    connection_map.insert(pair.0, current_count);
                 }
             }
         }
+        let mut sorting_vec: Vec<(&usize, &usize)> = connection_map.iter().map(|(k, v)| (k, v)).collect();
+        sorting_vec.sort_by(|a, b| a.1.cmp(b.1));
+        let mut sorted_update: Vec<&usize> = sorting_vec.iter().map(|(a, _)| *a).collect();
+        sorted_update.reverse();
         let middle = sorted_update.len() / 2;
         total_of_middles += *sorted_update.get(middle).unwrap();
     }
