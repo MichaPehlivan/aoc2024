@@ -71,20 +71,20 @@ fn check_possible_1(operands: &Vec<usize>, current_result: usize, target_result:
 }
 
 fn check_possible_2(operands: &Vec<usize>, current_result: usize, target_result: usize, index: usize) -> bool {
+    if current_result > target_result {
+        return false;
+    }
     if index == operands.len() {
         return current_result == target_result;
     }
-    else if current_result > target_result {
-        return false;
-    }
-    let next = operands.get(index).unwrap().clone();
+    let next = operands[index];
     if check_possible_2(operands, current_result+next, target_result, index+1) {
         return true;
     }
     if check_possible_2(operands, current_result*next, target_result, index+1) {
         return true
     }
-    let next_digits = (next as f64).log10().floor() as u32 + 1;
+    let next_digits = next.ilog10() + 1;
     if check_possible_2(operands, current_result * 10_usize.pow(next_digits) + next, target_result, index+1) {
         return true;
     }
