@@ -7,6 +7,7 @@ mod day4;
 mod day5;
 mod day6;
 mod day7;
+mod day8;
 
 fn main() {
     let mut now = Instant::now();
@@ -58,4 +59,12 @@ fn main() {
     now = Instant::now();
     let answer2_7 = day7::solve2();
     println!("day 7 answer 2 = {answer2_7} time: {:?}", now.elapsed());
+    now = Instant::now();
+
+    let answer1_8 = day8::solve1();
+    println!("day 8 answer 1 = {answer1_8} time: {:?}", now.elapsed());
+    now = Instant::now();
+    let answer2_8 = day8::solve2();
+    println!("day 8 answer 2 = {answer2_8} time: {:?}", now.elapsed());
+
 }
