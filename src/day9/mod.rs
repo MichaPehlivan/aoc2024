@@ -1,4 +1,4 @@
-use std::{fs::File, io::{BufRead, BufReader}};
+use std::{collections::HashMap, fs::File, io::{BufRead, BufReader}};
 
 #[derive(PartialEq)]
 enum DiskContent1 {
@@ -71,6 +71,7 @@ pub fn solve2() -> usize {
 
     let mut checksum = 0;
     let mut disk: Vec<DiskContent2> = vec![];
+    let mut search_map: HashMap<usize, usize> = HashMap::with_capacity(9);
 
     for line in reader.lines() {
         let line_clone = line.unwrap().clone();
@@ -96,17 +97,23 @@ pub fn solve2() -> usize {
         match disk[i] {
             DiskContent2::EMPTY(_) => continue,
             DiskContent2::FILE(id, num) => {
-                for j in 0..i {
+                let search_start = match search_map.get(&num) {
+                    Some(start) => *start,
+                    None => 0,
+                };
+                for j in search_start..i {
                     match disk[j] {
                         DiskContent2::EMPTY(lenght) => {
                             if lenght == num {
                                 disk.swap(i, j);
+                                search_map.insert(num, j+1);
                                 break;
                             }
                             else if lenght > num {
                                 let diff = lenght - num;
                                 disk.splice(j..=j, [DiskContent2::FILE(id, num), DiskContent2::EMPTY(diff)]);
                                 disk[i+1] = DiskContent2::EMPTY(num);
+                                search_map.insert(num, j+1);
                                 break;
                             }
                         },
