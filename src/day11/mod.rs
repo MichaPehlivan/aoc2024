@@ -1,4 +1,4 @@
-use std::{collections::HashMap, fs::File, io::{BufReader, Read}};
+use std::{collections::HashMap, fs::File, io::{BufReader, Read}, usize};
 
 pub fn solve1() -> usize {
     let file = File::open("src/day11/input.txt").unwrap();
@@ -41,18 +41,16 @@ pub fn solve2() -> usize {
     let file = File::open("src/day11/input.txt").unwrap();
     let mut reader = BufReader::new(file);
 
-    let mut line = String::new();
+    let mut line = String::with_capacity(36);
     reader.read_to_string(&mut line).unwrap();
     
-    let stones: Vec<(usize, usize)> = line.split_ascii_whitespace().map(|x| (usize::from_str_radix(x, 10).unwrap(), 1)).collect();
-    let mut histogram: HashMap<usize, usize> = stones.into_iter().collect();
+    let mut histogram: HashMap<usize, usize> = line.split_ascii_whitespace().map(|x| (usize::from_str_radix(x, 10).unwrap(), 1)).collect();
 
     for _ in 0..75 {
-        let saved_histogram = histogram.clone();
-        for (k, v) in saved_histogram {
+        for (k, v) in histogram.clone() {
             if v != 0 {
                 if k == 0 {
-                    *histogram.entry(0).or_insert(v) -= v;
+                    *histogram.entry(0).or_insert(1) -= v;
                     *histogram.entry(1).or_insert(0) += v;
                     continue;
                 }
@@ -63,12 +61,12 @@ pub fn solve2() -> usize {
                     let divisor = 10_usize.pow(num_digits / 2);
                     let first = k / divisor;
                     let second = k % divisor;
-                    *histogram.entry(k).or_insert(v) -= v;
+                    *histogram.entry(k).or_insert(1) -= v;
                     *histogram.entry(first).or_insert(0) += v;
                     *histogram.entry(second).or_insert(0) += v;
                 }
                 else {
-                    *histogram.entry(k).or_insert(v) -= v;
+                    *histogram.entry(k).or_insert(1) -= v;
                     *histogram.entry(k*2024).or_insert(0) += v;
                 }
             }
