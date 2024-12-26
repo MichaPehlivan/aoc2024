@@ -193,6 +193,9 @@ fn main() {
     let answer1_24 = day24::solve1();
     println!("day 24 answer 1 = {answer1_24} time: {:?}", now.elapsed());
     now = Instant::now();
+    let answer2_24 = day24::solve2();
+    println!("day 24 answer 2 = {answer2_24} time: {:?}", now.elapsed());
+    now = Instant::now();
 
     let answer1_25 = day25::solve1();
     println!("day 25 answer 1 = {answer1_25} time: {:?}", now.elapsed());
