@@ -1,4 +1,4 @@
-use std::{collections::{HashMap, HashSet, VecDeque}, fs::File, io::{BufRead, BufReader}};
+use std::{collections::HashMap, fs::File, io::{BufRead, BufReader}};
 
 pub fn solve1() -> usize {
     let file = File::open("src/day20/input.txt").unwrap();
@@ -31,59 +31,56 @@ pub fn solve1() -> usize {
         row += 1;
     }
 
-    let base_sol = find_shortest_path(&maze, start, end);
-
-    //identify posssible skips
-    let mut possible_skips = vec![];
-    for x in 1..140 {
-        for y in 1..140 {
-            if !maze[x][y] && (maze[x-1][y] || maze[x+1][y] || maze[x][y-1] || maze[x][y+1]) {
-                possible_skips.push((x, y));
-            }
-        }
+    let mut pathtime_map: HashMap<(isize, isize), isize> = HashMap::new();
+    let base_sol = find_base_sol(&maze, start, end);
+    let mut time_counter = 0;
+    for tile in base_sol.iter().rev() {
+        pathtime_map.insert(*tile, time_counter);
+        time_counter += 1;
     }
 
+    //check cheats
     let mut count = 0;
-    for skip in &possible_skips {
-        maze[skip.0][skip.1] = true;
-        let path_len = find_shortest_path(&maze, start, end);
-        if (base_sol - path_len) >= 100 {
-            count += 1;
+    for (tile_x, tile_y) in base_sol {
+        //for every tile on path within manhattan distance 2
+        for x in tile_x-2..=tile_x+2 {
+            for y in tile_y-(2-isize::abs(x-tile_x))..=tile_y+(2-isize::abs(x-tile_x)) {
+                if x > -1 && x < 141 && y > -1 && y < 141 && maze[x as usize][y as usize] { //point on grid and on path
+                    let manhattan_distance = isize::abs(x-tile_x) + isize::abs(y-tile_y);
+                    let time_saved = pathtime_map.get(&(tile_x, tile_y)).unwrap() - pathtime_map.get(&(x, y)).unwrap() - manhattan_distance;
+                    if time_saved >= 100 {
+                        count += 1;
+                    }
+                }
+            }
         }
-        maze[skip.0][skip.1] = false;
     }
 
     count
 }
 
-fn find_shortest_path(maze: &[[bool; 141]; 141], start: (isize, isize), end: (isize, isize)) -> usize {
-    let mut queue: VecDeque<(isize, isize)> = VecDeque::new();
-    let mut visited: HashSet<(isize, isize)> = HashSet::new();
-    let mut parent: HashMap<(isize, isize), (isize, isize)> = HashMap::new();
+fn find_base_sol(maze: &[[bool; 141]; 141], start: (isize, isize), end: (isize, isize)) -> Vec<(isize, isize)> {
+    let (mut dx, mut dy) = (0, -1);
+    let (mut x, mut y) = start;
     let mut path = vec![];
-
-    visited.insert(start);
-    queue.push_back(start);
-    while let Some(current) = queue.pop_front() {
-        
-        if current == end {
-            path.push(current);
-            let mut trace = current;
-            while let Some(&prev) = parent.get(&trace) {
-                path.push(prev);
-                trace = prev;
-            }
-            break;
+    while (x, y) != end {
+        path.push((x, y));
+        if maze[(x+dx) as usize][(y+dy) as usize] {
+            x += dx;
+            y += dy;
         }
-
-        for (dx, dy) in [(1, 0), (-1, 0), (0, 1), (0, -1)] {
-            let neighbour = (current.0 + dx, current.1 + dy);
-            if maze[neighbour.0 as usize][neighbour.1 as usize] && !visited.contains(&(neighbour.0, neighbour.1)) {
-                visited.insert((neighbour.0, neighbour.1));
-                parent.insert(neighbour, current);
-                queue.push_back(neighbour);
-            }
+        else {
+            for (dx_new, dy_new) in [(1, 0), (-1, 0), (0, 1), (0, -1)] {
+                if (dx_new, dy_new) != (-dx, -dy) && maze[(x+dx_new) as usize][(y+dy_new) as usize] {
+                    dx = dx_new;
+                    dy = dy_new;
+                    x += dx;
+                    y += dy;
+                    break;
+                }
+            } 
         }
     }
-    path.len()-1
+    path.push(end);
+    path
 }
