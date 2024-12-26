@@ -15,6 +15,7 @@ mod day12;
 mod day13;
 mod day14;
 mod day15;
+mod day16;
 mod day17;
 mod day18;
 mod day19;
@@ -131,6 +132,13 @@ fn main() {
     now = Instant::now();
     let answer2_15 = day15::solve2();
     println!("day 15 answer 2 = {answer2_15} time: {:?}", now.elapsed());
+    now = Instant::now();
+
+    let answer1_16 = day16::solve1();
+    println!("day 16 answer 1 = {answer1_16} time: {:?}", now.elapsed());
+    now = Instant::now();
+    let answer2_16 = day16::solve2();
+    println!("day 16 answer 2 = {answer2_16} time: {:?}", now.elapsed());
     now = Instant::now();
 
     let answer1_17 = day17::solve1();
