@@ -165,6 +165,9 @@ fn main() {
     let answer1_20 = day20::solve1();
     println!("day 20 part 1 = {answer1_20} time: {:?}", now.elapsed());
     now = Instant::now();
+    let answer2_20 = day20::solve2();
+    println!("day 20 part 2 = {answer2_20} time: {:?}", now.elapsed());
+    now = Instant::now();
 
     let answer1_21 = day21::solve1();
     println!("day 21 part 1 = {answer1_21} time: {:?}", now.elapsed());
